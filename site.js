@@ -221,15 +221,15 @@
         if (!covers.length) return;
         var id = covers[p.ci++ % covers.length];
         var urls = ['https://lh3.googleusercontent.com/d/' + id + '=w620', 'https://drive.google.com/thumbnail?id=' + id + '&sz=w620'];
-        p.img.removeAttribute('data-loaded'); p.img.style.opacity = '0';
-        (function tryU(i) { if (i >= urls.length) return; var im = new Image(); im.onload = function () { p.img.src = urls[i]; p.img.setAttribute('data-loaded', ''); }; im.onerror = function () { tryU(i + 1); }; im.src = urls[i]; })(0);
+        p.img.removeAttribute('data-loaded');   // fade out via CSS; opacity is driven by the attribute only (no inline override)
+        (function tryU(i) { if (i >= urls.length) return; var im = new Image(); im.referrerPolicy = 'no-referrer'; im.onload = function () { p.img.src = urls[i]; p.img.setAttribute('data-loaded', ''); }; im.onerror = function () { tryU(i + 1); }; im.src = urls[i]; })(0);
       };
       for (var i = 0; i < 16; i++) {
         var el = document.createElement('span'); el.className = 'flow';
         el.style.width = (128 + Math.round(Math.random() * 118)) + 'px';
         var inner = document.createElement('span'); inner.className = 'flow-inner';
         var fill = document.createElement('span'); fill.className = 'flow-fill';
-        var img = document.createElement('img'); img.className = 'flow-img'; img.alt = '';
+        var img = document.createElement('img'); img.className = 'flow-img'; img.alt = ''; img.referrerPolicy = 'no-referrer';
         inner.appendChild(fill); inner.appendChild(img); el.appendChild(inner);
         field.appendChild(el);
         var p = { el: el, fill: fill, img: img, phase: i / 16, dur: 6.5 + Math.random() * 3.8, ang: 0, spin: 0, last: 2, gi: i, ci: i };
