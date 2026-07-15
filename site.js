@@ -204,8 +204,11 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var parts = [], maxR = 0;
     if (field && !reduce) {
-      var covers = [];
-      Object.keys(man).forEach(function (k) { if (man[k] && man[k][0]) covers.push(man[k][0]); });
+      // Stream every photo from every Drive project, round-robined across
+      // projects so the flow stays varied instead of clustering by set.
+      var covers = [], lists = Object.keys(man).map(function (k) { return man[k] || []; }), maxLen = 0;
+      lists.forEach(function (a) { if (a.length > maxLen) maxLen = a.length; });
+      for (var c = 0; c < maxLen; c++) for (var l = 0; l < lists.length; l++) if (lists[l][c]) covers.push(lists[l][c]);
       var grads = [
         'linear-gradient(135deg,#F3E8D6,#8C6647)', 'linear-gradient(150deg,#DCE7EE,#3A5A74)',
         'linear-gradient(150deg,#C2CDB6,#43514A)', 'linear-gradient(140deg,#EBDFCB,#3A4E86)',
